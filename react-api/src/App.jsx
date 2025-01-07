@@ -1,35 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [photos, setPhotos] = useState([]);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [tracking, setTracking] = useState(0);
+
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        const response = await axios.get("https://jsonplaceholder.typicode.com/photos?_limit=6");
+        setPhotos(response.data);
+      } catch (error) {
+        console.error("Error fetching photos", error);
+      }
+    };
+    fetchPhotos();
+  }, []);
+
+  const openImage = (index) => {
+    setSelectedPhoto(photos[index]);
+    setTracking(index);
+  };
+
+  const showNextImage = () => {
+    setTracking((prevTracking) => (prevTracking + 1) % photos.length);
+  };
+
+  const showPreviousImage = () => {
+    setTracking((prevTracking) => (prevTracking - 1 + photos.length) % photos.length);
+  };
 
   return (
-    <>
+    <div>
+      <h1>Photo Gallery</h1>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {photos.map((photo, index) => (
+          <div key={photo.id} onClick={() => openImage(index)}>
+            <img src={photo.url} alt={photo.title} />
+            <figcaption>{photo.title.charAt(0).toUpperCase() + photo.title.slice(1)}</figcaption>
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      {selectedPhoto && (
+        <div onClick={() => setSelectedPhoto(null)}>
+          <div>
+            <div onClick={(e) => { e.stopPropagation(); showPreviousImage(); }}>
+              <i className="fa-solid fa-arrow-left"></i>
+            </div>
+            <img src={selectedPhoto.url} alt={selectedPhoto.title} />
+            <div onClick={(e) => { e.stopPropagation(); showNextImage(); }}>
+              <i className="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
