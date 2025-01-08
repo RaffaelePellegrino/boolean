@@ -9,7 +9,7 @@ function App() {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const response = await axios.get("https://jsonplaceholder.typicode.com/photos?_limit=6");
+        const response = await axios.get("http://localhost:5000/api/photos");
         setPhotos(response.data);
       } catch (error) {
         console.error("Error fetching photos", error);
