@@ -5,6 +5,9 @@ function Post({post}){
         <div className="card">
             <img src={post.url} alt={post.title} />
             <figcaption>{post.title}</figcaption>
+            <a href="#">
+                ciao
+            </a>
         </div>
     );
 }

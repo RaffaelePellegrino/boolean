@@ -1,6 +1,7 @@
 import React from "react";
 import Post from './PostCard';
 
+
 function PostTab ({posts}) {
     return (
         <div className="post-list">
